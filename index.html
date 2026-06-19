@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGMA (Sistem Infografis Gempabumi Malang)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f0f2f5; }
+        
+        #infografisCard { 
+            width: 1080px; 
+            height: 1080px; 
+            background: white; 
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .no-print { width: 450px; }
+        .social-icon { height: 18px; width: 18px; margin-right: 6px; }
+        
+        .shakemap-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            background: #ffffff;
+        }
+        #displayImage {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 1.5rem;
+        }
+    </style>
+</head>
+<body class="p-6 flex flex-row gap-8 justify-center items-start">
+
+    <div class="no-print bg-white p-6 rounded-3xl shadow-xl border border-gray-200 sticky top-5 h-[95vh] flex flex-col">
+        <h2 class="text-xl font-extrabold mb-4 text-blue-900 border-b-2 pb-2 uppercase tracking-wider">Control Panel SIGMA</h2>
+        
+        <div class="space-y-4 flex-1 overflow-y-auto pr-2 text-[11px]">
+            <div>
+                <label class="block font-black text-gray-500 uppercase mb-1">1. Unggah Shakemap</label>
+                <input type="file" id="inputImage" accept="image/*" class="w-full border p-2 rounded-xl bg-gray-50 text-[12px]">
+            </div>
+            
+            <div>
+                <label class="block font-black text-gray-500 uppercase mb-1">2. Tempel Narasi BMKG (Otomatis)</label>
+                <textarea id="mainInput" class="w-full border-2 border-slate-100 p-3 rounded-2xl h-44 focus:border-blue-600 outline-none transition-all text-[12px]" 
+                placeholder="Tempel narasi rilis di sini untuk pengisian otomatis..."></textarea>
+            </div>
+
+            <div class="border-t pt-2 my-2"></div>
+
+            <div>
+                <label class="block font-black text-blue-900 uppercase mb-2 text-[12px]">3. Inputan Manual / Koreksi Data</label>
+                <div class="space-y-3 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                    <div>
+                        <label class="block font-bold text-gray-600 mb-1">Judul Infografis</label>
+                        <input type="text" id="manualTitle" class="w-full border p-2 rounded-lg bg-white text-[12px]" placeholder="GEMPABUMI TEKTONIK M5.2...">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-600 mb-1">Waktu Kejadian</label>
+                        <input type="text" id="manualTime" class="w-full border p-2 rounded-lg bg-white text-[12px]" placeholder="Rabu, 17 Juni 2026 pukul 09:21:49 WIB">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block font-bold text-gray-600 mb-1">Magnitudo</label>
+                            <input type="text" id="manualMag" class="w-full border p-2 rounded-lg bg-white text-[12px]" placeholder="5,2">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-gray-600 mb-1">Kedalaman (km)</label>
+                            <input type="text" id="manualDepth" class="w-full border p-2 rounded-lg bg-white text-[12px]" placeholder="10">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-600 mb-1">Koordinat Epicenter</label>
+                        <input type="text" id="manualCoords" class="w-full border p-2 rounded-lg bg-white text-[12px]" placeholder="8.45 LS - 112.50 BT">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-600 mb-1">Lokasi Pusat Gempa</label>
+                        <input type="text" id="manualLoc" class="w-full border p-2 rounded-lg bg-white text-[12px]" placeholder="95 km BaratDaya KAB-MALANG-JATIM">
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-600 mb-1">Jenis & Mekanisme</label>
+                        <textarea id="manualSource" class="w-full border p-2 rounded-lg bg-white h-16 text-[12px]" placeholder="Gempabumi dangkal akibat aktivitas subduksi..."></textarea>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-gray-600 mb-1">Gempabumi Susulan</label>
+                        <textarea id="manualAftershock" class="w-full border p-2 rounded-lg bg-white h-12 text-[12px]" placeholder="Hingga pukul 10.00 WIB, belum menunjukkan adanya aktivitas gempa susulan."></textarea>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block font-bold text-gray-600 mb-1">Skala MMI (Wilayah)</label>
+                            <input type="text" id="manualMMIVal" class="w-full border p-2 rounded-lg bg-white text-[12px]" placeholder="III MMI Malang, II MMI Blitar">
+                        </div>
+                        <div>
+                            <label class="block font-bold text-gray-600 mb-1">Deskripsi Dampak</label>
+                            <input type="text" id="manualMMIDesc" class="w-full border p-2 rounded-lg bg-white text-[12px]" placeholder="Getaran dirasakan nyata di dalam rumah.">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <button id="btnDownload" class="mt-4 w-full bg-blue-950 text-white font-black py-4 rounded-2xl hover:bg-black transition-all flex items-center justify-center gap-2 uppercase tracking-widest shadow-lg text-[13px]">
+            📥 DOWNLOAD GAMBAR
+        </button>
+    </div>
+
+    <div id="infografisCard">
+        <div class="bg-blue-950 h-[200px] px-12 text-white flex flex-col justify-center items-center border-b-[8px] border-orange-500 text-center relative">
+            <p class="text-blue-400 font-bold text-[14px] uppercase tracking-[0.6em] mb-3">Laporan Gempabumi Dirasakan</p>
+            <h1 id="displayTitle" class="text-[32px] font-extrabold uppercase leading-[1.2] italic tracking-tight px-4">MENUNGGU INPUT...</h1>
+            <div class="w-20 h-1 bg-orange-500 my-3 opacity-50"></div>
+            <p id="displayTime" class="text-slate-400 font-bold text-[18px] tracking-widest uppercase">-</p>
+        </div>
+
+        <div class="flex flex-1 overflow-hidden">
+            <div class="w-[480px] bg-gray-50 p-8 flex flex-col gap-6 border-r border-gray-200">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-white p-5 rounded-[2rem] border border-gray-100 shadow-sm text-center">
+                        <span class="text-[12px] text-gray-400 uppercase font-black block mb-1">Magnitudo</span>
+                        <p id="displayMag" class="text-6xl font-black text-red-600 italic">-</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-[2rem] border border-gray-100 shadow-sm text-center">
+                        <span class="text-[12px] text-gray-400 uppercase font-black block mb-1">Kedalaman</span>
+                        <p id="displayDepth" class="text-6xl font-black text-slate-800 italic">-</p>
+                    </div>
+                </div>
+
+                <div class="bg-blue-950 p-8 rounded-[2.5rem] text-white space-y-6 shadow-2xl flex-1 flex flex-col justify-center border-l-8 border-orange-500">
+                    <div>
+                        <p class="text-[11px] font-black text-blue-400 uppercase tracking-widest mb-2">Epicenter & Lokasi</p>
+                        <p id="displayCoords" class="font-extrabold text-[22px] text-white mb-2 italic uppercase tracking-tighter leading-none">-</p>
+                        <p id="displayLoc" class="font-bold text-[15px] leading-snug text-orange-400">-</p>
+                    </div>
+                    <div class="border-t border-blue-800 pt-5">
+                        <p class="text-[11px] font-black text-blue-400 uppercase tracking-widest mb-1">Jenis & Mekanisme</p>
+                        <p id="displaySource" class="font-bold text-[13px] italic leading-snug text-slate-200">-</p>
+                    </div>
+                    <div class="border-t border-blue-800 pt-5">
+                        <p class="text-[11px] font-black text-blue-400 uppercase tracking-widest mb-1">Gempabumi Susulan</p>
+                        <p id="displayAftershock" class="font-bold text-[13px] leading-snug text-slate-300">-</p>
+                    </div>
+                </div>
+
+                <div class="bg-red-600 p-6 rounded-[2.5rem] text-white shadow-xl">
+                    <p id="displayMMIVal" class="text-[14px] font-black italic bg-white text-red-600 px-4 py-2 rounded-xl inline-block leading-tight mb-2">-</p>
+                    <p id="displayMMIDesc" class="text-[13px] font-bold italic leading-relaxed">-</p>
+                </div>
+            </div>
+
+            <div class="shakemap-wrapper">
+                <img id="displayImage" src="https://via.placeholder.com/800x1200?text=UNGGAH+SHAKEMAP">
+            </div>
+        </div>
+
+        <div class="bg-slate-900 h-[120px] px-10 flex justify-between items-center border-t-[8px] border-blue-600">
+            <div class="flex flex-col gap-2">
+                <p class="text-[15px] font-black text-white tracking-wider uppercase italic">Stasiun Geofisika Kelas III Malang</p>
+                <div class="flex gap-6">
+                    <span class="flex items-center text-[12px] text-slate-300 font-bold lowercase">
+                        <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" class="social-icon brightness-200"> stageof.malang
+                    </span>
+                    <span class="flex items-center text-[12px] text-slate-300 font-bold lowercase">
+                        <img src="https://cdn-icons-png.flaticon.com/512/5968/5968958.png" class="social-icon brightness-200"> stageof_malang
+                    </span>
+                    <span class="flex items-center text-[12px] text-slate-300 font-bold">
+                        <img src="https://cdn-icons-png.flaticon.com/512/5968/5968764.png" class="social-icon brightness-200"> StasiunGeofisikaMalang
+                    </span>
+                </div>
+            </div>
+            <div class="bg-orange-500 px-7 py-4 rounded-2xl shadow-lg text-blue-950 font-black text-[18px]">
+                0812-3208-7312
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const mainInput = document.getElementById('mainInput');
+        
+        // Element target display pada infografis
+        const dTitle = document.getElementById('displayTitle');
+        const dTime = document.getElementById('displayTime');
+        const dMag = document.getElementById('displayMag');
+        const dDepth = document.getElementById('displayDepth');
+        const dCoords = document.getElementById('displayCoords');
+        const dLoc = document.getElementById('displayLoc');
+        const dSource = document.getElementById('displaySource');
+        const dAftershock = document.getElementById('displayAftershock');
+        const dMMIVal = document.getElementById('displayMMIVal');
+        const dMMIDesc = document.getElementById('displayMMIDesc');
+
+        // Element form manual inputan
+        const mTitle = document.getElementById('manualTitle');
+        const mTime = document.getElementById('manualTime');
+        const mMag = document.getElementById('manualMag');
+        const mDepth = document.getElementById('manualDepth');
+        const mCoords = document.getElementById('manualCoords');
+        const mLoc = document.getElementById('manualLoc');
+        const mSource = document.getElementById('manualSource');
+        const mAftershock = document.getElementById('manualAftershock');
+        const mMMIVal = document.getElementById('manualMMIVal');
+        const mMMIDesc = document.getElementById('manualMMIDesc');
+
+        // --- 1. OTOMATISASI DARI PASTE TEXT ---
+        mainInput.addEventListener('input', function() {
+            let text = this.value;
+
+            // Ekstraksi Judul
+            const titleMatch = text.match(/\*(.*?)\*/);
+            const titleRes = titleMatch ? titleMatch[1].trim() : "MENUNGGU INPUT...";
+            dTitle.innerText = titleRes; mTitle.value = titleRes;
+
+            // Ekstraksi Waktu
+            const timeMatch = text.match(/(?:Hari|Pada Hari)\s+(.*?\s+(?:WIB|WITA|WIT))/i);
+            const timeRes = timeMatch ? timeMatch[1].trim() : "-";
+            dTime.innerText = timeRes; mTime.value = timeRes;
+
+            // Ekstraksi Magnitudo
+            const magMatch = text.match(/(?:M|Mag|Magnitudo)\s?[:=]?\s?(\d+[\.,]\d+)/i);
+            const magRes = magMatch ? magMatch[1].replace('.', ',') : "-";
+            dMag.innerText = magRes; mMag.value = magRes;
+
+            // Ekstraksi Kedalaman
+            const depthMatch = text.match(/(?:Kedalaman|Dlm)\s?[:]*\s?(\d+)\s?km/i);
+            if (depthMatch) {
+                dDepth.innerHTML = `${depthMatch[1]}<span class="text-2xl text-gray-400 ml-1 italic font-bold">km</span>`;
+                mDepth.value = depthMatch[1];
+            } else {
+                dDepth.innerText = "-"; mDepth.value = "";
+            }
+
+            // Ekstraksi Koordinat
+            const coordMatch = text.match(/koordinat\s+(.*?BT)/i);
+            const coordRes = coordMatch ? coordMatch[1].trim() : "-";
+            dCoords.innerText = coordRes; mCoords.value = coordRes;
+
+            // Ekstraksi Lokasi
+            const locMatch = text.match(/BT[,]?\s+(.*?)(?=\s+dengan kedalaman)/i);
+            let locRes = "-";
+            if (locMatch) {
+                locRes = locMatch[1].trim();
+                if (locRes.endsWith(',')) locRes = locRes.slice(0, -1);
+            }
+            dLoc.innerText = locRes; mLoc.value = locRes;
+
+            // Ekstraksi Jenis Mekanisme
+            const mechMatch = text.match(/Jenis dan Mekanisme Gempabumi:?\s*([\s\S]*?)(?=Dampak Gempabumi:|$)/i);
+            const mechRes = mechMatch ? mechMatch[1].replace(/\*/g, '').trim() : "-";
+            dSource.innerText = mechRes; mSource.value = mechRes;
+
+            // Ekstraksi Susulan
+            const afterMatch = text.match(/Gempabumi Susulan:?\s*([\s\S]*?)(?=Rekomendasi:|$)/i);
+            const afterRes = afterMatch ? afterMatch[1].replace(/\*/g, '').trim() : "-";
+            dAftershock.innerText = afterRes; mAftershock.value = afterRes;
+
+            // Ekstraksi MMI & Deskripsi Dampak
+            const mmiFullMatch = text.match(/dirasakan di\s+(.*?MMI)/i);
+            if (mmiFullMatch) {
+                const mmiValRes = mmiFullMatch[1].trim();
+                dMMIVal.innerText = mmiValRes; mMMIVal.value = mmiValRes;
+                
+                const mmiDescMatch = text.match(/\((.*?)\)/); 
+                const mmiDescRes = mmiDescMatch ? `"${mmiDescMatch[1]}"` : "Getaran dirasakan nyata.";
+                dMMIDesc.innerText = mmiDescRes; mMMIDesc.value = mmiDescRes.replace(/"/g, '');
+            } else {
+                dMMIVal.innerText = "-"; mMMIVal.value = "";
+                dMMIDesc.innerText = "-"; mMMIDesc.value = "";
+            }
+        });
+
+        // --- 2. LOGIKA INPUT MANUAL (LANSUNG UPDATE REALTIME) ---
+        mTitle.addEventListener('input', (e) => dTitle.innerText = e.target.value || "MENUNGGU INPUT...");
+        mTime.addEventListener('input', (e) => dTime.innerText = e.target.value || "-");
+        mMag.addEventListener('input', (e) => dMag.innerText = e.target.value || "-");
+        mDepth.addEventListener('input', (e) => {
+            dDepth.innerHTML = e.target.value ? `${e.target.value}<span class="text-2xl text-gray-400 ml-1 italic font-bold">km</span>` : "-";
+        });
+        mCoords.addEventListener('input', (e) => dCoords.innerText = e.target.value || "-");
+        mLoc.addEventListener('input', (e) => dLoc.innerText = e.target.value || "-");
+        mSource.addEventListener('input', (e) => dSource.innerText = e.target.value || "-");
+        mAftershock.addEventListener('input', (e) => dAftershock.innerText = e.target.value || "-");
+        mMMIVal.addEventListener('input', (e) => dMMIVal.innerText = e.target.value || "-");
+        mMMIDesc.addEventListener('input', (e) => dMMIDesc.innerText = e.target.value ? `"${e.target.value}"` : "-");
+
+
+        // --- 3. PROSES UPLOAD & DOWNLOAD ---
+        document.getElementById('inputImage').addEventListener('change', function(e) {
+            const reader = new FileReader();
+            reader.onload = function(v) { document.getElementById('displayImage').src = v.target.result; }
+            if(e.target.files[0]) reader.readAsDataURL(e.target.files[0]);
+        });
+
+        document.getElementById('btnDownload').addEventListener('click', function() {
+            html2canvas(document.getElementById('infografisCard'), { 
+                scale: 2, 
+                useCORS: true,
+                logging: false,
+                backgroundColor: "#ffffff"
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `SIGMA (Sistem Infografis Gempabumi Malang)_${Date.now()}.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            });
+        });
+    </script>
+</body>
+</html>
