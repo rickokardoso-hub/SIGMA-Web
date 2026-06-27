@@ -22,23 +22,20 @@
         .no-print { width: 450px; }
         .social-icon { height: 18px; width: 18px; margin-right: 6px; }
         
-        /* Wrapper Shakemap diatur agar responsif dan menampung gambar dengan pas */
+        /* Kembalikan ke struktur wrapper awal agar layout fleksibel dan proporsional */
         .shakemap-wrapper {
             flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 30px;
             background: #ffffff;
-            min-height: 500px; 
-            max-width: 600px; /* Membatasi lebar area gambar agar seimbang dengan data kiri */
         }
-        
-        /* Gambar shakemap disesuaikan otomatis mengikuti ukuran container-nya */
+        /* Menjaga kualitas dan rasio asli gambar agar tidak gepeng */
         #displayImage {
-            width: 100%;
-            height: 100%;
-            object-fit: contain; /* Menjaga aspek rasio gambar asli agar tidak gepeng/terdistorsi */
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
             border-radius: 1.5rem;
         }
         .dynamic-title {
@@ -147,7 +144,7 @@
             <p id="displayTime" class="text-slate-400 font-bold text-[16px] tracking-widest uppercase">-</p>
         </div>
 
-        <div class="flex flex-1 flex-row items-stretch">
+        <div class="flex flex-1 flex-row">
             <div class="w-[480px] bg-gray-50 p-6 flex flex-col gap-4 border-r border-gray-200 justify-between flex-shrink-0">
                 <div class="grid grid-cols-2 gap-4 flex-shrink-0">
                     <div class="bg-white p-4 rounded-[2rem] border border-gray-100 shadow-sm text-center">
